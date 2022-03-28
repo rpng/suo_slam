@@ -1,0 +1,13 @@
+numpy
+matplotlib
+pandas
+scipy
+psutil
+imageio
+pypng
+pyopengl
+glumpy
+matplotlib
+opencv-python
+torch==1.8.1
+torchvision==0.9.1

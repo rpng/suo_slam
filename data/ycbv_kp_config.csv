@@ -1,0 +1,22 @@
+# instance,class,has_grip,has_spout,has_brand_name,has_nutrition_facts,has_bar_code
+master_chef_can,cylinder_like,0,0,1,0,1
+cracker_box,box_like,0,0,1,1,1
+sugar_box,box_like,0,0,1,1,1
+tomato_soup_can,cylinder_like,0,0,1,1,1
+mustard_bottle,box_like,0,1,1,1,1
+tuna_fish_can,cylinder_like,0,0,1,1,1
+pudding_box,box_like,0,0,1,1,1
+gelatin_box,box_like,0,0,1,1,1
+potted_meat_can,box_like,0,0,1,1,1
+banana,cylinder_like,1,0,0,0,0
+pitcher_base,cylinder_like,1,1,0,0,0
+bleach_cleanser,box_like,0,1,1,0,0
+bowl,cylinder_like,0,0,0,0,0
+mug,cylinder_like,1,0,0,0,0
+power_drill,hand_tool,1,0,1,0,0
+wood_block,box_like,0,0,0,0,0
+scissors,hand_tool,1,0,0,0,0
+large_marker,cylinder_like,0,0,1,0,0
+large_clamp,hand_tool,1,0,0,0,0
+extra_large_clamp,hand_tool,1,0,0,0,0
+foam_brick,box_like,0,0,0,0,0

@@ -1,0 +1,8 @@
+__pycache__
+results
+*.swp
+*.swo
+.~lock.*
+*.sbatch
+.idea/
+env
