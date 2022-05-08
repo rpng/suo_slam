@@ -8,3 +8,4 @@ results
 env
 data
 debug.txt
+*.backup
