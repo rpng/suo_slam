@@ -88,7 +88,7 @@ in the `results` directory that is written to during training.
 <details>
 <summary>Click for details...</summary>
 
-First set the default arguments in `./lib/args.py` for your username if desired, then execute
+First set the default arguments in `./pkpnet/args.py` for your username if desired, then execute
 ```
 $ ./train.py
 ```
