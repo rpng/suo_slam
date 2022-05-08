@@ -87,7 +87,7 @@ def plot_sigmas(errs, sigmas, savepath=None,
     plt.show()
 
 def main():
-    from pkpnet.args import get_args
+    from lib.args import get_args
     args = get_args('eval')
 
     model = PkpNet(input_res=bop.IMAGE_SIZE)
