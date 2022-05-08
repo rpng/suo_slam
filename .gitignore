@@ -6,3 +6,5 @@ results
 *.sbatch
 .idea/
 env
+data
+debug.txt

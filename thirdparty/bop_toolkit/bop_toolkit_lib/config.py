@@ -12,7 +12,8 @@ import os
 if 'BOP_PATH' in os.environ:
   datasets_path = os.environ['BOP_PATH']
 else:
-  datasets_path = r'/media/nate/Elements/bop/bop_datasets/'
+  # (nmerrill67) NOTE: that this assumes being run in suo_slam root
+  datasets_path = r'data/bop_datasets/'
 
 # Folder with pose results to be evaluated.
 results_path = r''

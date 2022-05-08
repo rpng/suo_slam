@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
-import argparse
-import cv2
-import numpy as np
-import math
-import pandas as pd
-import time
 import os
+import cv2
 import json
+import math
+import time
+import argparse
+import numpy as np
+import pandas as pd
 
 # sudo apt install libfreetype6-dev
 # sudo apt install libglfw3
-from thirdparty.bop_toolkit.bop_toolkit_lib.renderer_py import RendererPython
+from thirdparty.bop_toolkit.bop_toolkit_lib.renderer import create_renderer
 
+from lib.utils.utils import euler2R
 from lib.labeling import kp_config
 
 np.random.seed(666)
@@ -20,22 +21,8 @@ np.random.seed(666)
 # Rendering image size.
 IMG_WH = 420
 
-def euler2R(euler):
-    # Assume euler = {gamma, beta, alpha} (degrees)
-    g, b, a = np.deg2rad(euler).astype(np.float64)
-    cosa = np.cos(a)
-    cosb = np.cos(b)
-    cosg = np.cos(g)
-    sina = np.sin(a)
-    sinb = np.sin(b)
-    sing = np.sin(g)
-    R = np.array([[cosa*cosb, cosa*sinb*sing - sina*cosg, cosa*sinb*cosg + sina*sing],
-                  [sina*cosb, sina*sinb*sing + cosa*cosg, sina*sinb*cosg - cosa*sing],
-                  [-sinb, cosb*sing, cosb*cosg]], dtype=np.float64)
-    return R
-
 class SelectionGui():
-    def __init__(self, ply_file, kp_config_file, r=7):
+    def __init__(self, ply_file, kp_config_file, r=7, renderer="python"):
         """
         ply_file (str): The path to the ply mesh file
         kp_config_file (str): The path to the keypoint config CSV file containing
@@ -59,7 +46,7 @@ class SelectionGui():
         print(f"Loading and setting up renderer for object from \"{ply_file}\"...")
         t = time.time()
         self.ply_file = ply_file
-        self.renderer = RendererPython(self.f, self.f)
+        self.renderer = create_renderer(self.f, self.f, renderer)
         self.renderer.add_object(0, ply_file)
         print(f"Done (took {time.time()-t:.3f} seconds)")
         
@@ -259,6 +246,7 @@ class SelectionGui():
                     u = uvz[0,0] / uvz[2,0]
                     v = uvz[1,0] / uvz[2,0]
                     u, v = int(u+.5), int(v+.5)
+                    cv2.circle(img_normal, (u,v), int(round(1.3*self.r)), [0,0,0], -1)
                     cv2.circle(img_normal, (u,v), self.r, self.kp_color(k), -1)
                     if self.kp_list[k] in connected.keys():
                         connected[self.kp_list[k]] = (u,v), self.kp_color(k)
@@ -295,6 +283,7 @@ class SelectionGui():
                     # Redraw the points over the line
                     for di in [-1,0]:
                         uv, color = text_uvs[i+di]
+                        cv2.circle(img_normal, uv, int(round(1.3*self.r)), [0,0,0], -1)
                         cv2.circle(img_normal, uv, self.r, color, -1)
             
             # If "once" we are doing a big vizualiation, so just return the normal image
@@ -486,6 +475,13 @@ if __name__ == '__main__':
     )
     
     parser.add_argument(
+        '--renderer',
+        type=str,
+        default="python", choices=["python", "cpp"],
+        help='Which type of renderer from BOP to use. See bop_toolkit for details.'
+    )
+    
+    parser.add_argument(
         '--dataset',
         type=str,
         default="ycbv", choices=["ycbv", "tless"],
@@ -508,12 +504,12 @@ if __name__ == '__main__':
     )
         
     parser.add_argument(
-        '-r', type=int, default=5,
+        '-r', type=int, default=8,
         help='Radius size in pixels of the rendered circles.'
     )
 
     args = parser.parse_args()
-    setattr(args, "kp_config_file", f"./data/{args.dataset}_kp_config.csv")
+    setattr(args, "kp_config_file", f"./kp_configs/{args.dataset}_kp_config.csv")
 
     if args.viz is not None:
         config_data = pd.read_csv(args.kp_config_file)
@@ -532,7 +528,8 @@ if __name__ == '__main__':
                 file_stem = "obj_" + str(object_idx+1).zfill(6)
                 ply_file = os.path.join(args.viz, file_stem + ".ply")
                 gui = SelectionGui(ply_file=ply_file, 
-                        kp_config_file=args.kp_config_file, r=args.r)
+                        kp_config_file=args.kp_config_file, r=args.r,
+                        renderer=args.renderer)
                 img = gui.inspect_from_file(once=True)
                 img_combined[i*IMG_WH:(i+1)*IMG_WH, j*IMG_WH:(j+1)*IMG_WH, :] = img
                 cv2.imshow("kp_viz.png", img_combined)
@@ -544,7 +541,7 @@ if __name__ == '__main__':
         cv2.waitKey(0)
     else:
         gui = SelectionGui(ply_file=args.ply_file, 
-                kp_config_file=args.kp_config_file, r=args.r)
+                kp_config_file=args.kp_config_file, r=args.r, renderer=args.renderer)
         
         if args.inspect: 
             gui.inspect_from_file()
