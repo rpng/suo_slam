@@ -1,5 +1,10 @@
-glumpy==1.2.0
 matplotlib==3.3.4
 opencv-python==4.5.2.54
 torch==1.8.1
 torchvision==0.9.1
+glumpy==1.2.0 # If fails, may have to sudo apt install python3-dev
+pyopengl
+imageio
+pandas
+scipy
+pypng

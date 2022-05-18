@@ -6,6 +6,10 @@ results
 *.sbatch
 .idea/
 env
-data
 debug.txt
 *.backup
+
+# Dataset directory
+data
+# Don't ignore this g2o directory though
+!thirdparty/g2opy/g2o/types/data/
